@@ -24,6 +24,8 @@ Mappings:
       AMI: "ami-09f85f3aaae282910"
     us-west-1:
       AMI: "ami-080d1454ad4fabd12"
+    eu-west-1:
+      AMI: "ami-005e7be1c849abba7"
 Resources:
   WebServer:
     Type: AWS::EC2::Instance
@@ -72,12 +74,12 @@ Resources:
       UserData:
         'Fn::Base64':
           !Sub |
-          #!/bin/bash -xe
+          #!/bin/bash -xe            
           # Ensure AWS CFN Bootstrap is the latest
-          sudo yum install -y aws-cfn-bootstrap
+          yum install -y aws-cfn-bootstrap
           # Install the files and packages from the metadata
-          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebSever  --region ${AWS::Region}
-          /opt/aws/bin/cfn-sgnal -e $? --stack ${AWS::StackName} --resource WebServer  --region ${AWS::Region} 
+          /opt/aws/bin/cfn-init -v --stack ${AWS::StackName} --resource WebServer  --region ${AWS::Region}
+          /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --resource WebServer  --region ${AWS::Region} 
 
   VprofileSG:
     Type: AWS::EC2::SecurityGroup
@@ -98,3 +100,4 @@ Outputs:
     Value: !GetAtt
       - WebServer
       - PublicDnsName
+
